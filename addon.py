@@ -2,7 +2,6 @@ from mitmproxy import ctx, http
 from mitmproxy import flowfilter
 import json
 
-METHOD = "PUT"
 ENDPOINT = "https://dibe.services.ihk.de/berichtsheft/erstellen-api/v1/berichtswoche"
 SKILLS = [5, 4, 11, 1, 10, 12, 27]
 
