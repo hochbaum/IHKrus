@@ -11,26 +11,26 @@ class IHKrus:
         self.filter: flowfilter.TFilter = flowfilter.FMethod("PUT")
 
     def request(self, flow: http.HTTPFlow) -> None:
-        if not flowfilter.match(self.filter, flow):
+        if not flowfilter.match(self.filter, flow) or flow.request.url != ENDPOINT: 
             return
 
-        if flow.request.url == ENDPOINT:
-            data = flow.request.json()
-            daily_reports = data["tagesBerichte"]
+        data = flow.request.json()
 
-            for report in daily_reports:
-                entries = report["eintraege"]
+        # Checked skills are located at `tagesBerichte[].eintraege[].qualifikationen[]`.
+        # They are encoded as `{"berufsbildPositionId": <ID of the checked box>}`.
+        [
+            entry["qualifikationen"].append({"berufsbildPositionId": skill}) 
+            for report in data["tagesBerichte"] 
+            for entry in report["eintraege"] 
+            for skill in SKILLS
 
-                for entry in entries:
-                    skills = entry["qualifikationen"]
-                    skills.clear()
+            # Don't send duplicate skills (it works but might look sus).
+            if {"berufsbildPositionId": skill} not in entry["qualifikationen"]
+        ]
 
-                    for skill in SKILLS:
-                        skills.append({"berufsbildPositionId": skill})
-
-            flow.request.content = json.dumps(data).encode()
-            ctx.master.commands.call("replay.client", [flow])
-            ctx.log.info("IHKrus: You are one qualified man!")
+        flow.request.content = json.dumps(data).encode()
+        ctx.master.commands.call("replay.client", [flow])
+        ctx.log.info("IHKrus: You are one qualified man!")
 
 
 addons = [IHKrus()]
