@@ -6,7 +6,7 @@ Warum? Die Checkboxen sind:
 - mit Text in Schriftgröße 1 oder so beschrieben.
 
 ## Wie benutze ich das?
-Du musst mitmproxy und sein Zertifikat installieren. Dann routest du deinen HTTP traffic durch den Port, auf dem
+Du musst mitmproxy und sein Zertifikat installieren. Dann routest du deinen HTTP-Traffic durch den Port, auf dem
 dein mitmproxy laufen soll (indem du z.B. deine Proxy-Einstellungen änderst). Anschließend startest du mitmproxy
 mit dem Addon so: `mitmproxy -s addon.py`
 
